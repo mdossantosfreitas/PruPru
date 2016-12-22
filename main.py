@@ -4,7 +4,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import pygame
 from pygame.locals import *
-from Sprite import Sprite
+from Character import Pomba
 import Texture
 
 class Main():
@@ -34,9 +34,10 @@ class Main():
 
 		self.x,self.y=0.0 , 0.0
 
-		self.sprite1 = Sprite("square.png", 2.0, self.y, 1.0, 1.0)
+		self.sprite1 = Pomba("data/pomba.png", 2.0, self.y, 1.0, 1.0)
+		self.sprite2 = Pomba("square.png", 2.0, self.y, 1.0, 1.0)
 
-
+		
 	def draw(self):
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 		glLoadIdentity()
@@ -51,8 +52,14 @@ class Main():
 		glColor4f(1.0, 1.0, 1.0,1.0)
 
 		self.sprite1.draw()
+		glPopMatrix()
+		glPushMatrix()
 
+		glTranslatef(3.0, 0.0, 0.0)
 
+		glColor4f(1.0, 1.0, 1.0,1.0)
+
+		self.sprite2.draw()
 		glPopMatrix()
 
 	def Input(self):
@@ -62,6 +69,7 @@ class Main():
 
 		if kpb[pygame.K_ESCAPE]:
 			self.done=True
+
 
 		if kpb[pygame.K_UP]:
 			self.y+=0.1
@@ -81,7 +89,7 @@ class Main():
 		pygame.init()
 		pygame.display.set_mode((640,480), video_flags)
 
-		pygame.display.set_caption("www.jason.gd")
+		pygame.display.set_caption("PruPru")
 
 		self.resize((640,480))
 		self.init()
@@ -102,4 +110,6 @@ class Main():
 			#limit fps
 			clock.tick(self.demandedFps)
 
-if __name__ == '__main__': Main()
+if __name__ == '__main__': Main():
+	
+	
