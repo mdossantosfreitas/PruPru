@@ -4,13 +4,18 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import pygame
 from pygame.locals import *
-from Character import Pomba
-from Character import Men
-from Character import Shit
-import Texture
+from Character import *
+from Borda import Borda
+from Texture import Texture 
 import random
 
 class Main():
+	limit_x = 7
+	limit_y = 5
+	init_x = -8
+	init_y = -5
+	key = 0
+	
 	def resize(self,(width, height)):
 		if height==0:
 			height=1
@@ -38,14 +43,14 @@ class Main():
 		self.x_pomba,self.y_pomba=-1.0,-6.0
 		self.mens = []
 		self.shits = []
-		
+		self.bordas = []
 		self.create_mens(3)
 		
-		self.pomba = Pomba("data/pomba2.png", -1.0, -6.0, 1.0, 1.0)
+		self.pomba = Pomba("data/pomba2.png", -1.0, -5.0, 1.0, 1.0)
+		self.pontos = Sprite("data/pontos.png", -8.0, -6.0, 3, 0.9)
 		
-		self.sprite3 = Pomba("data/dead.jpg", 0.0, 0.0, 1.0, 1.0)
-		self.sprite4 = Pomba("data/shit.jpg", 0.0, 0.0, 1.0, 1.0)
 		
+
 
 		
 	def draw(self):
@@ -69,7 +74,43 @@ class Main():
 			
 			#draw_shits
 			self.draw_shits()
+			
 	
+ 		#	self.draw_borda()
+			self.draw_pontos()	
+		 	if(self.pomba.points == 0):
+				self.pt = Sprite("data/0.png", -4.0, -6.0, 1, 0.9)
+			if(self.pomba.points == 1):
+				self.pt = Sprite("data/1.png", -4.0, -6.0, 1, 0.9)
+			if(self.pomba.points == 2):
+				self.pt = Sprite("data/2.png", -4.0, -6.0, 1, 0.9)
+			if(self.pomba.points == 3):
+				self.pt = Sprite("data/3.png", -4.0, -6.0, 1, 0.9)
+		
+			glPushMatrix()
+			glTranslatef(self.pt.x, self.pt.y, 0.0)
+			glColor4f(1.0, 1.0, 1.0,1.0)
+			self.pt.draw()
+			glPopMatrix()
+			
+					
+				
+		
+					
+			
+	
+	def draw_borda(self):
+		for borda in self.bordas:
+			glPushMatrix()							
+			glTranslatef(borda.x, borda.y, 0.0)
+			borda.draw()
+			glPopMatrix()
+			
+	def draw_pontos(self):
+			glPushMatrix()							
+			glTranslatef(self.pontos.x, self.pontos.y, 0.0)
+			self.pontos.draw()
+			glPopMatrix()
 			
 	def Input(self):
 		mpb=pygame.mouse.get_pressed() # mouse pressed buttons
@@ -77,12 +118,22 @@ class Main():
 		msh=pygame.mouse.get_rel() # mouse shift
 
 		if kpb[pygame.K_SPACE]:
-			shit = 	Shit("data/shit.jpg", self.pomba.x, self.pomba.y, 1.0, 1.0)
-			self.shits.append(shit)
+			if(self.key == 0):
+				shit = 	Shit("data/shit.jpg", self.pomba.x, self.pomba.y+self.pomba.size['height'], 1.0, 1.0)
+				self.shits.append(shit)
+				self.key +=1
+			else:
+				if(self.key == 4):
+					self.key = 0
+				else:
+					self.key +=1
+			
+			
 
 		colision_b = False
 		if kpb[pygame.K_UP]:
-			self.pomba.y+=0.1
+			if(self.pomba.y < self.limit_y):
+				self.pomba.y+=0.1
 			for men in self.mens:
 				if(colision_b == False):
 					colision_b = self.colision_up(self.pomba, men)
@@ -91,7 +142,9 @@ class Main():
 				self.pomba.dead = True
 			
 		if kpb[pygame.K_DOWN]:
-			self.pomba.y-=0.1
+			if(self.pomba.y > self.init_y):
+				self.pomba.y-=0.1
+			
 			for men in self.mens:
 				if(colision_b == False):
 					colision_b = self.colision_down(self.pomba, men)
@@ -100,7 +153,8 @@ class Main():
 				self.pomba.dead = True
 		
 		if kpb[pygame.K_RIGHT]:
-			self.pomba.x+=0.1
+			if(self.pomba.x < self.limit_x):
+				self.pomba.x+=0.1
 			for men in self.mens:
 				if(colision_b == False):
 					colision_b = self.colision_right(self.pomba, men)
@@ -109,7 +163,8 @@ class Main():
 				self.pomba.dead = True
 	
 		if kpb[pygame.K_LEFT]:
-			self.pomba.x-=0.1
+			if(self.pomba.x > self.init_x):
+				self.pomba.x-=0.1
 			for men in self.mens:
 				if(colision_b == False):
 					colision_b = self.colision_left(self.pomba, men)
@@ -142,6 +197,7 @@ class Main():
 				break
 			
 			self.update_shits()
+			self.move_mens()
 			self.Input()
 			self.draw()
 
@@ -178,7 +234,6 @@ class Main():
 	def colision_left(self, obj1, obj2):
 		if (((obj1.y >= obj2.y )	and (obj1.y <= (obj2.y+obj2.size['height']) ))		or 	(((obj1.y+obj1.size['height']) >= obj2.y) 	and ((obj1.y+obj1.size['height'] <= obj2.y+obj2.size['height'])))):
 			if((obj1.x <= (obj2.x+obj2.size['width'])) and (obj1.x>= obj2.x)):
-		#		print "colisao"
 				return True
 			else:
 				return False
@@ -198,26 +253,32 @@ class Main():
 	
 		
 
-	def move_obj(self):
-		self.x_p1+=0.05
-		self.y_p1+=0.05
+	def move_mens(self):
+		for men in self.mens:
+			if men.going_right == True:
+				men.x += men.speed
+				if men.x >= self.limit_x:
+					men.x -= men.speed
+	
+					men.going_right = False
+			else:
+				if men.going_right == False:
+					men.x -= men.speed
+					if men.x <= self.init_x:
+						men.x += men.speed
+						men.going_right = True
 
+
+			
 	def create_mens(self, qtd):
 		
 		for i in range(0, qtd):
 			posx = random.uniform(-8.0, 3.0)
-			posy = random.uniform(0.0, 3.0)
+			posy = 0.5 + (i+1)*1.5
 			men_obj = Men("data/men1.jpg", posx, posy, 1.0, 1.0)
 		
 			self.mens.append(men_obj)
 			
-			#men2 = self.mens
-			#for x in men2:
-			#	print "yeap"
-			#	if(colision(men_obj, x) == False):
-			#		self.mens.append(men_obj)
-			#		print "yeap"
-				
   
 	def colision(self, obj1, obj2):
 		if(self.colision_up(obj1, obj2) == True):
@@ -261,6 +322,7 @@ class Main():
 				if(self.colision(shit, men) == True):
 					self.mens.remove(men)
 					self.shits.remove(shit)
+					self.pomba.points += 1
 			
 
 
