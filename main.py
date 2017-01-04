@@ -50,7 +50,7 @@ class Main():
 		self.bordas = []
 		self.create_mens(qtd)
 		
-		self.pomba = Pomba("data/pomba2.png", -1.0, -5.0, 1.0, 1.0)
+		self.pomba = Pomba("data/Pigeon.png", -1.0, -5.0, 1.0, 1.0)
 		self.pontos = Sprite("data/pontos.png", -8.0, -6.0, 3, 0.9)
 		self.tempo = Sprite("data/tempo.png", -2.8, -6.0, 3, 0.9)
 		
@@ -167,7 +167,7 @@ class Main():
 
 		if kpb[pygame.K_SPACE]:
 			if(self.key == 0):
-				shit = 	Shit("data/shit.jpg", self.pomba.x, self.pomba.y+self.pomba.size['height'], 1.0, 1.0)
+				shit = 	Shit("data/shit.png", self.pomba.x, self.pomba.y+self.pomba.size['height'], 1.0, 1.0)
 				self.shits.append(shit)
 				self.key +=1
 			else:
@@ -186,9 +186,9 @@ class Main():
 				if(colision_b == False):
 					colision_b = self.colision_up(self.pomba, men)
 					
-		 	for men in self.mens_linha2:
-				if(colision_b == False):
-					colision_b = self.colision_up(self.pomba, men)
+		for men in self.mens_linha2:
+			if(colision_b == False):
+				colision_b = self.colision_up(self.pomba, men)
 					
 			for men in self.mens_linha3:
 				if(colision_b == False):
@@ -196,42 +196,42 @@ class Main():
 			
 			if(colision_b == True):
 				self.pomba.dead = True
-			
+
 		if kpb[pygame.K_DOWN]:
 			if(self.pomba.y > self.init_y):
 				self.pomba.y-=0.1
-			
+
 			for men in self.mens_linha1:
 				if(colision_b == False):
 					colision_b = self.colision_down(self.pomba, men)
-					
+
 			for men in self.mens_linha2:
 				if(colision_b == False):
 					colision_b = self.colision_down(self.pomba, men)
-					
+
 			for men in self.mens_linha3:
 				if(colision_b == False):
 					colision_b = self.colision_down(self.pomba, men)
-			
+
 	  	if(colision_b == True):
 				self.pomba.dead = True
-		
+
 		if kpb[pygame.K_RIGHT]:
 			if(self.pomba.x < self.limit_x):
 				self.pomba.x+=0.1
-				
+
 			for men in self.mens_linha1:
 				if(colision_b == False):
 					colision_b = self.colision_right(self.pomba, men)
-					
+
 		 	for men in self.mens_linha2:
 				if(colision_b == False):
 					colision_b = self.colision_right(self.pomba, men)
-			
+
 			for men in self.mens_linha3:
 				if(colision_b == False):
 					colision_b = self.colision_right(self.pomba, men)
-			
+
 			if(colision_b == True):
 				self.pomba.dead = True
 	
@@ -241,21 +241,17 @@ class Main():
 			for men in self.mens_linha1:
 				if(colision_b == False):
 					colision_b = self.colision_left(self.pomba, men)
-					
+
 			for men in self.mens_linha2:
 				if(colision_b == False):
 					colision_b = self.colision_left(self.pomba, men)
-					
+
 			for men in self.mens_linha3:
 				if(colision_b == False):
 					colision_b = self.colision_left(self.pomba, men)
-			
+
 			if(colision_b == True):
 				self.pomba.dead = True
-	
-	
-		
-		
 
 	def __init__(self):
 
@@ -289,7 +285,6 @@ class Main():
 				self.draw()
 				self.move_mens()				
 				self.update_shits()
-				
 
 				pygame.display.flip()
 			
@@ -303,7 +298,7 @@ class Main():
 					self.level.c_time2 = 0
 					self.level.c_time3 +=1
 				self.time +=1
-			
+
 			#limit fps
 				clock.tick(self.demandedFps)
 				
@@ -312,8 +307,7 @@ class Main():
 					self.ganhou = True
 					
 			self.flush()
-				
-			
+
 	def move(self, x, y, z):
 		glPushMatrix()
 		glTranslate(x, y, z)
