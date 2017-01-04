@@ -60,13 +60,14 @@ class Men():
 	visible = False
 	
 												
-	def __init__(self, texture_filename, position_x, position_y, width, height, visible):
+	def __init__(self, texture_filename, position_x, position_y, width, height, visible, speed):
 		self.texture = Texture(texture_filename)
 		self.x= position_x
 		self.y= position_y
 		self.size['width'] = width
 		self.size['height'] = height
 		self.visible = visible
+		self.speed = speed
 
 	def draw(self):
 		glBindTexture(GL_TEXTURE_2D, self.texture.texID)
