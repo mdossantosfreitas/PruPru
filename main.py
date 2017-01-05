@@ -23,6 +23,8 @@ class Main():
 	speed = 0.1
 	esc = False
 	final = False
+	inicio = False
+	NUMBER_OF_MEN = '1234'
 	def resize(self,(width, height)):
 		if height==0:
 			height=1
@@ -32,8 +34,8 @@ class Main():
 		gluOrtho2D(-8.0, 8.0, -6.0, 6.0)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
-
-	def init(self, qtd):
+ 
+	def init_gl(self):
 		#set some basic OpenGL settings and control variables
 		glShadeModel(GL_SMOOTH)
 		glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -43,8 +45,10 @@ class Main():
 		glDepthFunc(GL_LEQUAL)
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 		glEnable(GL_BLEND)
-
-		self.demandedFps=30.0
+		
+	def init(self, qtd):
+		self.init_gl()
+		
 		self.done=False
 
 		self.x_pomba,self.y_pomba=-1.0,-6.0
@@ -55,9 +59,12 @@ class Main():
 		self.bordas = []
 		self.create_mens(qtd)
 		
+		self.bg = Background("data/bg.png", -8, -5, 16, 11)
+		self.pontos = Sprite("data/Points.png", -8.0, -6.0, 3, 0.9)
+		self.tempo = Sprite("data/Time.png", -2.8, -6.0, 3, 0.9)
+	
 		self.pomba = Pomba("data/Pigeon.png", 1, 5, 1.0, 1.0)
-		self.pontos = Sprite("data/pontos.png", -8.0, -6.0, 3, 0.9)
-		self.tempo = Sprite("data/tempo.png", -2.8, -6.0, 3, 0.9)
+		
 		
 		
 
@@ -70,102 +77,110 @@ class Main():
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		
-		if(self.final == False):
-			if(self.pomba.dead == False):
+		if(self.inicio == False):
+			if(self.final == False):
+				if(self.pomba.dead == False):
+					
+					glPushMatrix()
+					glTranslatef(self.bg.x, self.bg.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.bg.draw()
+					glPopMatrix()
+					#draw_pigeon
+					glPushMatrix()
+					glTranslatef(self.pomba.x, self.pomba.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.pomba.draw()
+					glPopMatrix()
+					
+					#draw_mens
+					self.draw_mens()
+					
+					#draw_shits
+					self.draw_shits()
+					
+			
+		 		#	self.draw_borda()
+					self.draw_pontos()	
+				 	if(self.pomba.points == 0):
+						self.pt = Numero("data/0.png", -3.9, -6.0, 1, 0.9)
+					if(self.pomba.points == 1):
+						self.pt = Numero("data/1.png", -3.9, -6.0, 1, 0.9)
+					if(self.pomba.points == 2):
+						self.pt = Numero("data/2.png", -3.9, -6.0, 1, 0.9)
+					if(self.pomba.points == 3):
+						self.pt = Numero("data/3.png", -3.9, -6.0, 1, 0.9)
+					
+					glPushMatrix()
+					glTranslatef(self.pt.x, self.pt.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.pt.draw()
+					glPopMatrix()
+					
+				 	if(self.pomba.points2 == 0):
+						self.pt2 = Numero("data/0.png", -4.9, -6.0, 1, 0.9)
+					if(self.pomba.points2 == 1):
+						self.pt2 = Numero("data/1.png", -4.9, -6.0, 1, 0.9)
+					if(self.pomba.points2 == 2):
+						self.pt2 = Numero("data/2.png", -4.9, -6.0, 1, 0.9)
+					if(self.pomba.points2 == 3):
+						self.pt2 = Numero("data/3.png", -4.9, -6.0, 1, 0.9)
 				
-				#draw_pigeon
-				glPushMatrix()
-				glTranslatef(self.pomba.x, self.pomba.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.pomba.draw()
-				glPopMatrix()
-				
-				#draw_mens
-				self.draw_mens()
-				
-				#draw_shits
-				self.draw_shits()
-				
-		
-	 		#	self.draw_borda()
-				self.draw_pontos()	
-			 	if(self.pomba.points == 0):
-					self.pt = Numero("data/0.png", -3.9, -6.0, 1, 0.9)
-				if(self.pomba.points == 1):
-					self.pt = Numero("data/1.png", -3.9, -6.0, 1, 0.9)
-				if(self.pomba.points == 2):
-					self.pt = Numero("data/2.png", -3.9, -6.0, 1, 0.9)
-				if(self.pomba.points == 3):
-					self.pt = Numero("data/3.png", -3.9, -6.0, 1, 0.9)
-				
-				glPushMatrix()
-				glTranslatef(self.pt.x, self.pt.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.pt.draw()
-				glPopMatrix()
-				
-			 	if(self.pomba.points2 == 0):
-					self.pt2 = Numero("data/0.png", -4.9, -6.0, 1, 0.9)
-				if(self.pomba.points2 == 1):
-					self.pt2 = Numero("data/1.png", -4.9, -6.0, 1, 0.9)
-				if(self.pomba.points2 == 2):
-					self.pt2 = Numero("data/2.png", -4.9, -6.0, 1, 0.9)
-				if(self.pomba.points2 == 3):
-					self.pt2 = Numero("data/3.png", -4.9, -6.0, 1, 0.9)
+					glPushMatrix()
+					glTranslatef(self.pt2.x, self.pt2.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.pt2.draw()
+					glPopMatrix()
+					
+					glPushMatrix()
+					glTranslatef(self.tempo.x, self.tempo.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.tempo.draw()
+					glPopMatrix()
+					
+					path3 = self.get_number(self.level.c_time3)
+					self.time3 = Numero(path3, 0.2, -6.0, 1, 0.9)
+					
+					glPushMatrix()
+					glTranslatef(self.time3.x, self.time3.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.time3.draw()
+					glPopMatrix()
+					
+					path2 = self.get_number(self.level.c_time2)
+					self.time2 = Numero(path2, 1.2, -6.0, 1, 0.9)
+					
+					glPushMatrix()
+					glTranslatef(self.time2.x, self.time2.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.time2.draw()
+					glPopMatrix()
+					
+					path1 = self.get_number(self.level.c_time1)
+					self.time1 = Numero(path1, 2.2, -6.0, 1, 0.9)
+					
+					glPushMatrix()
+					glTranslatef(self.time1.x, self.time1.y, 0.0)
+					glColor4f(1.0, 1.0, 1.0,1.0)
+					self.time1.draw()
+					glPopMatrix()
+			else:
 			
 				glPushMatrix()
-				glTranslatef(self.pt2.x, self.pt2.y, 0.0)
+				glTranslatef(self.pontos.x, self.pontos.y, 0.0)
 				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.pt2.draw()
+				self.pontos.draw()
 				glPopMatrix()
-				
-				glPushMatrix()
-				glTranslatef(self.tempo.x, self.tempo.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.tempo.draw()
-				glPopMatrix()
-				
-				path3 = self.get_number(self.level.c_time3)
-				self.time3 = Numero(path3, 0.2, -6.0, 1, 0.9)
-				
-				glPushMatrix()
-				glTranslatef(self.time3.x, self.time3.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.time3.draw()
-				glPopMatrix()
-				
-				path2 = self.get_number(self.level.c_time2)
-				self.time2 = Numero(path2, 1.2, -6.0, 1, 0.9)
-				
-				glPushMatrix()
-				glTranslatef(self.time2.x, self.time2.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.time2.draw()
-				glPopMatrix()
-				
-				path1 = self.get_number(self.level.c_time1)
-				self.time1 = Numero(path1, 2.2, -6.0, 1, 0.9)
-				
-				glPushMatrix()
-				glTranslatef(self.time1.x, self.time1.y, 0.0)
-				glColor4f(1.0, 1.0, 1.0,1.0)
-				self.time1.draw()
-				glPopMatrix()
+			''''
 		else:
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
-			glLoadIdentity();		
+	
 			glPushMatrix()
-			glTranslatef(self.pontos.x, self.pontos.y, 0.0)
+			glTranslatef(self.enter.x, self.enter.y, 0.0)
 			glColor4f(1.0, 1.0, 1.0,1.0)
-			self.pontos.draw()
+			self.enter.draw()
 			glPopMatrix()
-			
-	def draw_borda(self):
-		for borda in self.bordas:
-			glPushMatrix()							
-			glTranslatef(borda.x, borda.y, 0.0)
-			borda.draw()
-			glPopMatrix()
+			'''''
+	
 			
 	def draw_pontos(self):
 			glPushMatrix()							
@@ -180,6 +195,8 @@ class Main():
 
 		if kpb[pygame.K_SPACE]:
 			self.esc = True
+			self.inicio = False
+			print "entrei"
 					
 	def Input(self):
 		mpb=pygame.mouse.get_pressed() # mouse pressed buttons
@@ -198,82 +215,16 @@ class Main():
 				else:
 					self.key +=1
 			
-			
-
-		colision_b = False
-		if kpb[pygame.K_UP]:
-			if(self.pomba.y < self.limit_y):
-				self.pomba.y+=0.1
-			for men in self.mens_linha1:
-				if(colision_b == False):
-					colision_b = self.colision_up(self.pomba, men)
-					
-		for men in self.mens_linha2:
-			if(colision_b == False):
-				colision_b = self.colision_up(self.pomba, men)
-					
-			for men in self.mens_linha3:
-				if(colision_b == False):
-					colision_b = self.colision_up(self.pomba, men)
-			
-			if(colision_b == True):
-				self.pomba.dead = True
-
-		if kpb[pygame.K_DOWN]:
-			if(self.pomba.y > self.init_y):
-				self.pomba.y-=0.1
-
-			for men in self.mens_linha1:
-				if(colision_b == False):
-					colision_b = self.colision_down(self.pomba, men)
-
-			for men in self.mens_linha2:
-				if(colision_b == False):
-					colision_b = self.colision_down(self.pomba, men)
-
-			for men in self.mens_linha3:
-				if(colision_b == False):
-					colision_b = self.colision_down(self.pomba, men)
-
-	  	if(colision_b == True):
-				self.pomba.dead = True
-
 		if kpb[pygame.K_RIGHT]:
 			if(self.pomba.x < self.limit_x):
 				self.pomba.x+=0.1
+ 
 
-			for men in self.mens_linha1:
-				if(colision_b == False):
-					colision_b = self.colision_right(self.pomba, men)
-
-		 	for men in self.mens_linha2:
-				if(colision_b == False):
-					colision_b = self.colision_right(self.pomba, men)
-
-			for men in self.mens_linha3:
-				if(colision_b == False):
-					colision_b = self.colision_right(self.pomba, men)
-
-			if(colision_b == True):
-				self.pomba.dead = True
-	
 		if kpb[pygame.K_LEFT]:
 			if(self.pomba.x > self.init_x):
 				self.pomba.x-=0.1
-			for men in self.mens_linha1:
-				if(colision_b == False):
-					colision_b = self.colision_left(self.pomba, men)
-
-			for men in self.mens_linha2:
-				if(colision_b == False):
-					colision_b = self.colision_left(self.pomba, men)
-
-			for men in self.mens_linha3:
-				if(colision_b == False):
-					colision_b = self.colision_left(self.pomba, men)
-
-			if(colision_b == True):
-				self.pomba.dead = True
+				
+		
 
 	def __init__(self):
   
@@ -288,6 +239,11 @@ class Main():
 		
 		self.ganhou = True
 		self.speed = 0.1
+		
+		
+		clock = pygame.time.Clock()
+		
+		self.demandedFps=30.0		
 		while(self.ganhou == True):
 			self.final = False
 			self.time = 0
@@ -297,7 +253,7 @@ class Main():
 			self.level = Level(1, 3, 0, 3, 0)
 			self.init(3)
 			iterator +=1
-			clock = pygame.time.Clock()
+			
 			while(self.level.passou_tempo() == False):
 				event = pygame.event.poll()
 				if event.type == pygame.QUIT or self.done:
@@ -324,27 +280,11 @@ class Main():
 
 			#limit fps
 				clock.tick(self.demandedFps)
-			self.time = 0	
-			self.final = True
-			self.draw()
-			'''
-			while(self.esc == False and self.time !=300 ):
-				self.input2()
-				self.draw()
-				self.time +=1
-				print self.time
-				pygame.display.flip()
-				clock.tick(self.demandedFps)	
-	  
-			if(self.esc == True):
-				self.ganhou = True
-			else:
-				self.ganhou = False
-			self.flush() '''''
+			self.flush() 
 			self.ganhou = False
 		
 				
-		time.sleep(10)
+		time.sleep(3)
 		pygame.display.quit()
 		pygame.quit() 
 		sys.exit(0)
@@ -451,18 +391,21 @@ class Main():
 		qtd = qtd/3
 		for i in range(0, qtd):
 			posx = random.uniform(-8.0, 3.0)
-			posy = -2
+			posy = -5
 			if(i == 0):
 				visible = True
 			else:
 				visible = False
-			men_obj1 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, visible, self.speed)
+			sprite = random.choice(self.NUMBER_OF_MEN)
+			men_obj1 = Men("data/cit%s.png" % (sprite), posx, posy, 1.0, 1.0, visible, self.speed)
 			posx = random.uniform(-8.0, 3.0)
 			posy = -3.5
-			men_obj2 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, visible, self.speed)
+			sprite = random.choice(self.NUMBER_OF_MEN)
+			men_obj2 = Men("data/cit%s.png" % (sprite), posx, posy, 1.0, 1.0, visible, self.speed)
 			posx = random.uniform(-8.0, 3.0)
-			posy = -5
-			men_obj3 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, visible, self.speed)
+			posy = -2
+			sprite = random.choice(self.NUMBER_OF_MEN)
+			men_obj3 = Men("data/cit%s.png" % (sprite), posx, posy, 1.0, 1.0, visible, self.speed)
 		
 			self.mens_linha1.append(men_obj1)
 			self.mens_linha2.append(men_obj2)
@@ -538,9 +481,10 @@ class Main():
 								self.pomba.points = 0
 								self.pomba.points2 +=1
 				if(coli == True):			
+					sprite = random.choice(self.NUMBER_OF_MEN)
 					posx = random.uniform(-8.0, 3.0)
 					posy = -2
-					men_obj3 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, True, self.speed)
+					men_obj3 = Men("data/cit%s.png" % (sprite), posx, -2, 1.0, 1.0, True, self.speed)
 					self.mens_linha3.append(men_obj3)
 					self.speed = self.speed + 0.01
 				
@@ -561,9 +505,10 @@ class Main():
 								self.pomba.points = 0
 								self.pomba.points2 +=1
 				if(coli == True):			
+					sprite = random.choice(self.NUMBER_OF_MEN)
 					posx = random.uniform(-8.0, 3.0)
 					posy = -3.5
-					men_obj2 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, True, self.speed)
+					men_obj2 = Men("data/cit%s.png" % (sprite), posx, -3.5, 1.0, 1.0, True, self.speed)
 					self.mens_linha2.append(men_obj2)
 					self.speed = self.speed + 0.01
 					
@@ -584,14 +529,12 @@ class Main():
 							self.pomba.points = 0
 							self.pomba.points2 +=1
 			if(coli == True):			
+				sprite = random.choice(self.NUMBER_OF_MEN)
 				posx = random.uniform(-8.0, 3.0)
 				posy = -5
-				men_obj1 = Men("data/men1.jpg", posx, posy, 1.0, 1.0, True, self.speed)
+				men_obj1 = Men("data/cit%s.png" % (sprite), posx, -5, 1.0, 1.0, True, self.speed)
 				self.mens_linha1.append(men_obj1)
 				self.speed = self.speed + 0.01
-			
-		if(self.level.c_kills == self.level.n_kills):
-			self.level.ganhou = True
 			
 	def get_number(self, number):
 		if(number == 0):
