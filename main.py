@@ -102,14 +102,7 @@ class Main():
 			
 		 		#	self.draw_borda()
 					self.draw_pontos()	
-				 	if(self.pomba.points == 0):
-						self.pt = Numero("data/0.png", -3.9, -6.0, 1, 0.9)
-					if(self.pomba.points == 1):
-						self.pt = Numero("data/1.png", -3.9, -6.0, 1, 0.9)
-					if(self.pomba.points == 2):
-						self.pt = Numero("data/2.png", -3.9, -6.0, 1, 0.9)
-					if(self.pomba.points == 3):
-						self.pt = Numero("data/3.png", -3.9, -6.0, 1, 0.9)
+			 		self.pt = Numero("data/%s.png" % (self.pomba.points), -3.9, -6.0, 1, 0.9)
 					
 					glPushMatrix()
 					glTranslatef(self.pt.x, self.pt.y, 0.0)
@@ -117,14 +110,7 @@ class Main():
 					self.pt.draw()
 					glPopMatrix()
 					
-				 	if(self.pomba.points2 == 0):
-						self.pt2 = Numero("data/0.png", -4.9, -6.0, 1, 0.9)
-					if(self.pomba.points2 == 1):
-						self.pt2 = Numero("data/1.png", -4.9, -6.0, 1, 0.9)
-					if(self.pomba.points2 == 2):
-						self.pt2 = Numero("data/2.png", -4.9, -6.0, 1, 0.9)
-					if(self.pomba.points2 == 3):
-						self.pt2 = Numero("data/3.png", -4.9, -6.0, 1, 0.9)
+				 	self.pt2 = Numero("data/%s.png" % (self.pomba.points2), -4.9, -6.0, 1, 0.9)
 				
 					glPushMatrix()
 					glTranslatef(self.pt2.x, self.pt2.y, 0.0)
